@@ -3,6 +3,11 @@ import os
 import sys
 import re
 import glob
+import hashlib
+
+def get_file_hash(code):
+    """Generate SHA256 hash of file contents for caching"""
+    return hashlib.sha256(code.encode()).hexdigest()
 
 # Setup client
 client = genai.Client(api_key=os.environ.get('GEMINI_API_KEY'))
@@ -94,6 +99,9 @@ def review_code(file_path):
     # Read the Python file
     with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
         code = f.read()
+    
+    file_hash = get_file_hash(code)
+    print(f"📋 File hash: {file_hash}")
 
     print(f"\n📝 Reviewing: {file_path}\n")
     print("=" * 50)
